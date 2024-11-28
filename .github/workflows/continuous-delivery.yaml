@@ -50,7 +50,7 @@ jobs:
         with:
           push: true
           context: .
-          file: ./cmd/kobs/Dockerfile
+          file: ./Dockerfile
           platforms: linux/amd64,linux/arm64/v8
           tags: ghcr.io/${{ github.repository_owner }}/namespacerole-operator:${{ env.TAG }}
 
@@ -70,7 +70,7 @@ jobs:
       - name: Set Version
         id: version
         run: |
-          echo "VERSION=$(yq -r .version ./charts/namespacerole-operator/Chart.yaml)" >> "$GITHUB_OUTPUT"
+          echo VERSION=$(yq -r .version ./charts/namespacerole-operator/Chart.yaml) >> $GITHUB_ENV
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -82,5 +82,5 @@ jobs:
       - name: Package and Push Helm Chart
         run: |
           helm package ./charts/namespacerole-operator --version ${{ env.VERSION }}
-          helm push ./namespacerole-operator-${{ env.VERSION }}.tgz oci://${{ github.repository_owner }}/charts          
+          helm push ./namespacerole-operator-${{ env.VERSION }}.tgz oci://ghcr.io/${{ github.repository_owner }}/charts          
   
