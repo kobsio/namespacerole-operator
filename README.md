@@ -90,6 +90,13 @@ will also create three `Role`s and `RoleBinding`s `kobs-mygroup2` for the second
 
 ## Installation
 
+The operator can be installed via the Helm chart present in the `charts`
+directory. The chart can be installed with the following command:
+
+```sh
+helm upgrade --install namespacerole-operator oci://ghcr.io/kobsio/charts/namespacerole-operator --version 0.1.0
+```
+
 ## Development
 
 After modifying the `*_types.go` files in the `api/v1alpha1` folder always run
