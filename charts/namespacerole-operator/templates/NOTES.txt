@@ -1,0 +1,6 @@
+You can find more information about running the NamespaceRole Operator on
+Kubernetes in the GitHub repository:
+
+  https://github.com/kobsio/namespacerole-operator
+
+Thanks for using the NamespaceRole Operator!

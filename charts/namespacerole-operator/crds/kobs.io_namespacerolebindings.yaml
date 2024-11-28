@@ -1,0 +1,130 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.15.0
+  name: namespacerolebindings.kobs.io
+spec:
+  group: kobs.io
+  names:
+    kind: NamespaceRoleBinding
+    listKind: NamespaceRoleBindingList
+    plural: namespacerolebindings
+    singular: namespacerolebinding
+  scope: Cluster
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: NamespaceRoleBinding is the Schema for the namespacerolebindings
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: NamespaceRoleBindingSpec defines the desired state of NamespaceRoleBinding
+            properties:
+              roleRef:
+                description: |-
+                  RoleRef is a reference to a NamespaceRole, which is used to create all the
+                  ClusterRoleBindings and RoleBindings. These are created based on the status
+                  field of the NamespaceRole.
+                properties:
+                  name:
+                    description: |-
+                      Name is the name of the NamespaceRole, which should be used by the
+                      NamespaceRoleBinding.
+                    type: string
+                required:
+                - name
+                type: object
+              subjects:
+                items:
+                  description: |-
+                    Subject contains a reference to the object or user identities a role binding applies to.  This can either hold a direct API object reference,
+                    or a value for non-objects such as user and group names.
+                  properties:
+                    apiGroup:
+                      description: |-
+                        APIGroup holds the API group of the referenced subject.
+                        Defaults to "" for ServiceAccount subjects.
+                        Defaults to "rbac.authorization.k8s.io" for User and Group subjects.
+                      type: string
+                    kind:
+                      description: |-
+                        Kind of object being referenced. Values defined by this API group are "User", "Group", and "ServiceAccount".
+                        If the Authorizer does not recognized the kind value, the Authorizer should report an error.
+                      type: string
+                    name:
+                      description: Name of the object being referenced.
+                      type: string
+                    namespace:
+                      description: |-
+                        Namespace of the referenced object.  If the object kind is non-namespace, such as "User" or "Group", and this value is not empty
+                        the Authorizer should report an error.
+                      type: string
+                  required:
+                  - kind
+                  - name
+                  type: object
+                  x-kubernetes-map-type: atomic
+                type: array
+            required:
+            - roleRef
+            - subjects
+            type: object
+          status:
+            description: NamespaceRoleBindingStatus defines the observed state of
+              NamespaceRoleBinding
+            properties:
+              clusterRoleBindings:
+                description: |-
+                  ClusterRoleBindings is a list of ClusterRoleBindings which were created by
+                  the operator.
+                items:
+                  properties:
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                  required:
+                  - name
+                  - namespace
+                  type: object
+                type: array
+              roleBindings:
+                description: RoleBinding is a list of RoleBindings which were created
+                  by the operator.
+                items:
+                  properties:
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                  required:
+                  - name
+                  - namespace
+                  type: object
+                type: array
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

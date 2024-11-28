@@ -1,0 +1,86 @@
+---
+name: Continuous Delivery
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*
+
+jobs:
+  docker:
+    name: Docker
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set Docker Tag
+        id: tag
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo TAG=${GITHUB_REF:10} >> $GITHUB_ENV
+          else
+            echo TAG=main >> $GITHUB_ENV
+          fi
+
+      - name: Setup QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+
+      - name: Build and Push Docker Image
+        id: docker_build
+        uses: docker/build-push-action@v5
+        with:
+          push: true
+          context: .
+          file: ./cmd/kobs/Dockerfile
+          platforms: linux/amd64,linux/arm64/v8
+          tags: ghcr.io/${{ github.repository_owner }}/namespacerole-operator:${{ env.TAG }}
+
+  helm:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set Version
+        id: version
+        run: |
+          echo "VERSION=$(yq -r .version ./charts/namespacerole-operator/Chart.yaml)" >> "$GITHUB_OUTPUT"
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+
+      - name: Package and Push Helm Chart
+        run: |
+          helm package ./charts/namespacerole-operator --version ${{ env.VERSION }}
+          helm push ./namespacerole-operator-${{ env.VERSION }}.tgz oci://${{ github.repository_owner }}/charts          
+  

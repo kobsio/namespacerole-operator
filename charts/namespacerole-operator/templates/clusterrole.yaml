@@ -1,0 +1,87 @@
+{{ if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind:  ClusterRole
+metadata:
+  name: {{ include "namespacerole-operator.fullname" . }}
+  labels:
+    {{- include "namespacerole-operator.labels" . | nindent 4 }}
+rules:
+  - apiGroups:
+      - kobs.io
+    resources:
+      - namespacerolebindings
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - kobs.io
+    resources:
+      - namespacerolebindings/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - kobs.io
+    resources:
+      - namespacerolebindings/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - kobs.io
+    resources:
+      - namespaceroles
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - kobs.io
+    resources:
+      - namespaceroles/finalizers
+    verbs:
+      - update
+  - apiGroups:
+      - kobs.io
+    resources:
+      - namespaceroles/status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterrolebindings
+      - rolebindings
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - rbac.authorization.k8s.io
+    resources:
+      - clusterroles
+      - roles
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+{{ end }}
