@@ -3,5 +3,5 @@ apiVersion: v2
 name: namespacerole-operator
 description: A Kubernetes operator that manages the role-based access control (RBAC) for namespaces
 type: application
-version: 0.1.0
+version: 0.1.1
 appVersion: v0.1.0
