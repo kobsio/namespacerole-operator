@@ -14,7 +14,21 @@ spec:
     singular: namespacerolebinding
   scope: Cluster
   versions:
-  - name: v1alpha1
+  - additionalPrinterColumns:
+    - description: The NamespaceRole used by the NamespaceRoleBinding
+      jsonPath: .spec.roleRef.name
+      name: NamespaceRole
+      type: string
+    - description: Selector to get all ClusterRoleBindings / RoleBindings created
+        by the operator
+      jsonPath: .status.selector
+      name: Selector
+      type: string
+    - description: Time when this NamespaceRoleBinding was created
+      jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
     schema:
       openAPIV3Schema:
         description: NamespaceRoleBinding is the Schema for the namespacerolebindings
@@ -122,6 +136,11 @@ spec:
                   - namespace
                   type: object
                 type: array
+              selector:
+                description: |-
+                  The label selector to get all ClusterRoleBindings / RoleBindings created by
+                  the operator.
+                type: string
             type: object
         type: object
     served: true

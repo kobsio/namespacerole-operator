@@ -22,6 +22,9 @@ type NamespaceRoleBindingSpecRoleRef struct {
 
 // NamespaceRoleBindingStatus defines the observed state of NamespaceRoleBinding
 type NamespaceRoleBindingStatus struct {
+	// The label selector to get all ClusterRoleBindings / RoleBindings created by
+	// the operator.
+	Selector string `json:"selector,omitempty"`
 	// ClusterRoleBindings is a list of ClusterRoleBindings which were created by
 	// the operator.
 	ClusterRoleBindings []NamespaceRoleStatusRoleBinding `json:"clusterRoleBindings,omitempty"`
@@ -39,6 +42,9 @@ type NamespaceRoleStatusRoleBinding struct {
 // +kubebuilder:resource:scope=Cluster
 
 // NamespaceRoleBinding is the Schema for the namespacerolebindings API
+// +kubebuilder:printcolumn:name="NamespaceRole",type=string,JSONPath=`.spec.roleRef.name`,description="The NamespaceRole used by the NamespaceRoleBinding"
+// +kubebuilder:printcolumn:name="Selector",type=string,JSONPath=`.status.selector`,description="Selector to get all ClusterRoleBindings / RoleBindings created by the operator"
+// +kubebuilder:printcolumn:name="Age",type=date,JSONPath=`.metadata.creationTimestamp`,description="Time when this NamespaceRoleBinding was created"
 type NamespaceRoleBinding struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`

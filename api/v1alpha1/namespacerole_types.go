@@ -16,6 +16,8 @@ type NamespaceRoleSpec struct {
 
 // NamespaceRoleStatus defines the observed state of NamespaceRole
 type NamespaceRoleStatus struct {
+	// The label selector to get all ClusterRoles / Roles created by the operator.
+	Selector string `json:"selector,omitempty"`
 	// ClusterRoles is a list of ClusterRoles which were created by the operator.
 	ClusterRoles []NamespaceRoleStatusRole `json:"clusterRoles,omitempty"`
 	// Roles is a list of Roles which were created by the operator.
@@ -32,6 +34,9 @@ type NamespaceRoleStatusRole struct {
 // +kubebuilder:resource:scope=Cluster
 
 // NamespaceRole is the Schema for the namespaceroles API
+// +kubebuilder:printcolumn:name="Namespaces",type=string,JSONPath=`.spec.namespaces`,description="List of namespaces for which the NamespaceRole is used"
+// +kubebuilder:printcolumn:name="Selector",type=string,JSONPath=`.status.selector`,description="Selector to get all ClusterRoles / Roles created by the operator"
+// +kubebuilder:printcolumn:name="Age",type=date,JSONPath=`.metadata.creationTimestamp`,description="Time when this NamespaceRole was created"
 type NamespaceRole struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
