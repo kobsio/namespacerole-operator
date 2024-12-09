@@ -13,7 +13,6 @@ repo: github.com/kobsio/namespacerole-operator
 resources:
 - api:
     crdVersion: v1
-    namespaced: true
   controller: true
   domain: kobs.io
   kind: NamespaceRole

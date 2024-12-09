@@ -2,6 +2,7 @@ package controller
 
 import (
 	"context"
+	"fmt"
 
 	kobsiov1alpha1 "github.com/kobsio/namespacerole-operator/api/v1alpha1"
 
@@ -192,6 +193,7 @@ func (r *NamespaceRoleReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 		}
 	}
 
+	namespaceRole.Status.Selector = fmt.Sprintf("%s=%s", selectorLabelKeyNR, namespaceRole.Name)
 	namespaceRole.Status.ClusterRoles = processedClusterRoles
 	namespaceRole.Status.Roles = processedRoles
 
