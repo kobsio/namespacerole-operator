@@ -5,5 +5,5 @@ description:
   A Kubernetes operator that manages the role-based access control (RBAC) for
   namespaces
 type: application
-version: 0.2.2
-appVersion: v0.1.2
+version: 0.2.3
+appVersion: v0.2.0
